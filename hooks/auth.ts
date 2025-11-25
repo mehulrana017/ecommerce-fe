@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-console */
 import { useMutation } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api/client";
