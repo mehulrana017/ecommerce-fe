@@ -24,15 +24,20 @@ export interface User {
 
 // Product Types
 export interface Product {
-  id: string;
+  _id: string;
   name: string;
-  description?: string;
+  description: string;
+  images: string[];
   price: number;
-  imageUrl?: string;
-  category?: string;
-  stock?: number;
-  createdAt?: string;
-  updatedAt?: string;
+  stock: number;
+  category: number;
+  tags: string[];
+  rating: number;
+  reviewCount: number;
+  isActive: boolean;
+  __v: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface ProductFilters {
@@ -121,8 +126,10 @@ export interface PaginationParams {
 
 export interface PaginatedResponse<T> {
   data: T[];
-  total: number;
-  page: number;
-  limit: number;
-  hasMore: boolean;
+  pagination?: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
 }
