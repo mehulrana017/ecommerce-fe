@@ -1,0 +1,128 @@
+// Authentication Types
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+export interface RegisterData {
+  email: string;
+  password: string;
+  name?: string;
+}
+
+export interface AuthResponse {
+  token: string;
+  user: User;
+}
+
+export interface User {
+  id: string;
+  email: string;
+  name?: string;
+  createdAt?: string;
+}
+
+// Product Types
+export interface Product {
+  id: string;
+  name: string;
+  description?: string;
+  price: number;
+  imageUrl?: string;
+  category?: string;
+  stock?: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface ProductFilters {
+  category?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  search?: string;
+}
+
+// Cart Types
+export interface CartItem {
+  id: string;
+  productId: string;
+  product?: Product;
+  quantity: number;
+  price: number;
+}
+
+export interface Cart {
+  id: string;
+  userId: string;
+  items: CartItem[];
+  total: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface AddToCartData {
+  productId: string;
+  quantity: number;
+}
+
+export interface UpdateCartItemData {
+  cartItemId: string;
+  quantity: number;
+}
+
+// Order Types
+export interface OrderItem {
+  id: string;
+  productId: string;
+  product?: Product;
+  quantity: number;
+  price: number;
+}
+
+export interface Order {
+  id: string;
+  userId: string;
+  items: OrderItem[];
+  total: number;
+  status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
+  shippingAddress?: Address;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface Address {
+  street: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  country: string;
+}
+
+export interface CreateOrderData {
+  items: Array<{
+    productId: string;
+    quantity: number;
+  }>;
+  shippingAddress: Address;
+}
+
+// API Error Types
+export interface ApiError {
+  message: string;
+  status?: number;
+  errors?: Record<string, string[]>;
+}
+
+// Pagination Types
+export interface PaginationParams {
+  page?: number;
+  limit?: number;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  total: number;
+  page: number;
+  limit: number;
+  hasMore: boolean;
+}
