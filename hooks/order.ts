@@ -1,16 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-console */
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api/client";
 import { toast } from "@/hooks/use-toast";
-import type { Order, CreateOrderData, PaginatedResponse } from "@/lib/types/api";
+import type { Order, CreateOrderData } from "@/lib/types/api";
 
 // Get all orders
 export const useGetOrders = () => {
   const query = useQuery({
     queryKey: ["orders"],
     queryFn: async () => {
-      return apiClient.get<PaginatedResponse<Order>>("/orders");
+      return apiClient.get<Order[]>("/orders");
     },
+    enabled: false, // Don't auto-fetch, only fetch when refetch() is called
   });
 
   return [
@@ -45,11 +47,14 @@ export const useGetOrderById = (id: string) => {
 
 // Create order
 export const useCreateOrder = () => {
+  const queryClient = useQueryClient();
+
   const mutation = useMutation({
     mutationFn: async (data: CreateOrderData) => {
       return apiClient.post<Order>("/orders", data);
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
       toast({
         title: "Success",
         description: "Order created successfully",
@@ -59,6 +64,39 @@ export const useCreateOrder = () => {
       toast({
         variant: "destructive",
         description: error.message || "Failed to create order",
+      });
+    },
+  });
+
+  return [
+    mutation.mutate,
+    {
+      isPending: mutation.isPending,
+      error: mutation.error,
+    },
+  ] as const;
+};
+
+// Cancel order
+export const useCancelOrder = () => {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: async (orderId: string) => {
+      return apiClient.post(`/orders/${orderId}/cancel`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      toast({
+        title: "Order Cancelled",
+        description: "Your order has been cancelled successfully",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        variant: "destructive",
+        title: "Cancellation Failed",
+        description: error.message || "Failed to cancel order",
       });
     },
   });

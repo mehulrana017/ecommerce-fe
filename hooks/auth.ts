@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-console */
 import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { apiClient } from "@/lib/api/client";
 import { toast } from "@/hooks/use-toast";
+import { useAppContext } from "@/context/AppContext";
 import type {
   LoginCredentials,
   RegisterData,
@@ -11,17 +13,25 @@ import type {
 
 // Login hook
 export const useLogin = () => {
+  const { setToken, setCurrentUser } = useAppContext();
+  const router = useRouter();
+
   const mutation = useMutation({
     mutationFn: async (credentials: LoginCredentials) => {
       return apiClient.post<AuthResponse>("/auth/login", credentials);
     },
     onSuccess: (data) => {
-      // Store token in localStorage
-      localStorage.setItem("token", data.token);
+      setToken(data.token);
+      setCurrentUser(data.user);
+
       toast({
         title: "Success",
         description: "Login successful",
       });
+
+      setTimeout(() => {
+        router.push("/");
+      }, 100);
     },
     onError: (error: any) => {
       toast({
@@ -42,16 +52,25 @@ export const useLogin = () => {
 
 // Register hook
 export const useRegister = () => {
+  const { setToken, setCurrentUser } = useAppContext();
+  const router = useRouter();
+
   const mutation = useMutation({
     mutationFn: async (data: RegisterData) => {
       return apiClient.post<AuthResponse>("/auth/register", data);
     },
     onSuccess: (data) => {
-      localStorage.setItem("token", data.token);
+      setToken(data.token);
+      setCurrentUser(data.user);
+
       toast({
         title: "Success",
         description: "Registration successful",
       });
+
+      setTimeout(() => {
+        router.push("/");
+      }, 100);
     },
     onError: (error: any) => {
       toast({
@@ -72,12 +91,16 @@ export const useRegister = () => {
 
 // Logout hook
 export const useLogout = () => {
+  const { dispatch } = useAppContext();
+
   const logout = () => {
-    localStorage.removeItem("token");
+    dispatch({ type: "LOGOUT" });
+
     toast({
       description: "Logged out successfully",
     });
-    // Optionally redirect to login page
+
+    // Redirect to login page
     if (typeof window !== "undefined") {
       window.location.href = "/login";
     }

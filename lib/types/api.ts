@@ -76,23 +76,27 @@ export interface UpdateCartItemData {
 }
 
 // Order Types
-export interface OrderItem {
-  id: string;
+export interface OrderProduct {
   productId: string;
-  product?: Product;
-  quantity: number;
+  name: string;
   price: number;
+  quantity: number;
+  subtotal: number;
 }
 
 export interface Order {
-  id: string;
+  _id: string;
+  orderId: string;
   userId: string;
-  items: OrderItem[];
-  total: number;
+  products: OrderProduct[];
+  totalPrice: number;
+  totalDiscount: number;
+  couponApplied: string | null;
+  shippingAddress: Address;
   status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
-  shippingAddress?: Address;
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
 }
 
 export interface Address {
