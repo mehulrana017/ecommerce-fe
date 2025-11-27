@@ -38,6 +38,31 @@ export const useGetProducts = (filters?: ProductFilters) => {
   ] as const;
 };
 
+// Search products without updating global state
+export const useSearchProducts = (filters?: ProductFilters) => {
+  const query = useQuery({
+    queryKey: ["search-products", filters],
+    queryFn: async () => {
+      const queryParams = new URLSearchParams(filters as any).toString();
+      const endpoint = queryParams ? `/products?${queryParams}` : "/products";
+      const response = await apiClient.get<PaginatedApiResponse<Product>>(
+        endpoint
+      );
+      return response;
+    },
+    enabled: !!filters?.search, // Only run when there's a search query
+  });
+
+  return [
+    query.refetch,
+    {
+      isPending: query.isPending,
+      error: query.error,
+      data: query.data,
+    },
+  ] as const;
+};
+
 // Get product by ID
 export const useGetProductById = (id: string) => {
   const query = useQuery({
