@@ -68,7 +68,11 @@ export function SignupForm({
       </div>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" {...props}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-4"
+          {...props}
+        >
           <FormField
             control={form.control}
             name="name"
@@ -90,11 +94,7 @@ export function SignupForm({
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input
-                    type="email"
-                    placeholder="m@example.com"
-                    {...field}
-                  />
+                  <Input type="email" placeholder="m@example.com" {...field} />
                 </FormControl>
                 <FormDescription>
                   We&apos;ll use this to contact you. We will not share your
@@ -131,9 +131,7 @@ export function SignupForm({
                 <FormControl>
                   <Input type="password" {...field} />
                 </FormControl>
-                <FormDescription>
-                  Please confirm your password.
-                </FormDescription>
+                <FormDescription>Please confirm your password.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
